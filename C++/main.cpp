@@ -1,103 +1,182 @@
-
 #include <iostream>
 using namespace std;
 
 /**
- * 產品基底類別，負責宣告所有子類別必須要進行的預設操作.
+ * Each distinct product of a product family should have a base interface. All
+ * variants of the product must implement this interface.
+ * 產品系列中的每個不同產品都應該有一個基本接口。 
+ * 產品的所有變體都必須實現此接口。
  */
-
-class Product {
+class AbstractProductA {
  public:
-  virtual ~Product() {}
-  virtual std::string Operation() const = 0;
+  virtual ~AbstractProductA(){};
+  virtual std::string UsefulFunctionA() const = 0;
 };
 
 /**
- * 子類別繼承產品的基底類別後，則負責將預設操作的方法進行實作.
+ * Concrete Products are created by corresponding Concrete Factories.
+ * 具體產品由相應的具體工廠創建。
  */
-
-class ConcreteProduct1 : public Product {
+class ConcreteProductA1 : public AbstractProductA {
  public:
-  std::string Operation() const override {
-    return "{ Result of the ConcreteProduct1 }";
+  std::string UsefulFunctionA() const override {
+    return "The result of the product A1.";
   }
 };
 
-class ConcreteProduct2 : public Product {
- public:
-  std::string Operation() const override {
-    return "{ Result of the ConcreteProduct2 }";
-  }
-};
-
-/**
- * 創建者類別則聲明了應該返回產品類別對象的工廠方法.
- * 創建者的子類別則通常提供該方法的實現。
- */
-
-class Creator {
- public:
-  virtual ~Creator(){};
-  virtual Product* FactoryMethod() const = 0;
-
- /**
-  * 請注意，創建者的主要職責並不是只有創建產品。 
-  * 通常會包含一些依賴於由工廠方法返回的產品對象的核心實作邏輯。 
-  * 子類可以通過覆蓋工廠方法並從中返回不同類型的產品來間接更改該其實作邏輯。
-  */
-  std::string SomeOperation() const {
-    // 調用工廠方法創建產品對象。
-    Product* product = this->FactoryMethod();
-
-    // 現在，使用該產品及其方法實作。
-    std::string result = "Creator: The same creator's code has just worked with " + product->Operation();
-    delete product;
-    return result;
+class ConcreteProductA2 : public AbstractProductA {
+  std::string UsefulFunctionA() const override {
+    return "The result of the product A2.";
   }
 };
 
 /**
- * 創建者的子類別，藉由覆蓋工廠方法以更改結果產品的類型。
+ * Here's the the base interface of another product. All products can interact
+ * with each other, but proper interaction is possible only between products of
+ * the same concrete variant.
+ * 
+ * 這是另一個產品的基本界面。 
+ * 所有產品都可以相互交互，但只有具有相同具體變體的產品之間才能進行適當的交互。
  */
-class ConcreteCreator1 : public Creator {
+class AbstractProductB {
+  /**
+   * Product B is able to do its own thing...
+   * 產品 B 能夠做自己的事情......
+   */
  public:
-  Product* FactoryMethod() const override {
-    return new ConcreteProduct1();
+  virtual ~AbstractProductB(){};
+  virtual std::string UsefulFunctionB() const = 0;
+  /**
+   * ...but it also can collaborate with the ProductA.
+   * 但它也可以與 產品A 協作。
+   *
+   * The Abstract Factory makes sure that all products it creates are of the
+   * same variant and thus, compatible.
+   * 抽象工廠確保它創建的所有產品都具有相同的變體，因此是兼容的。
+   */
+  virtual std::string AnotherUsefulFunctionB(const AbstractProductA &collaborator) const = 0;
+};
+
+/**
+ * Concrete Products are created by corresponding Concrete Factories.
+ * 具體產品由相應的具體工廠創建。
+ */
+class ConcreteProductB1 : public AbstractProductB {
+ public:
+  std::string UsefulFunctionB() const override {
+    return "The result of the product B1.";
+  }
+  /**
+   * The variant, Product B1, is only able to work correctly with the variant,
+   * Product A1. Nevertheless, it accepts any instance of AbstractProductA as an
+   * argument.
+   * 
+   * 變體產品 B1 只能與變體產品 A1 一起正常工作。 
+   * 然而，它接受 AbstractProductA 的任何實例作為參數。
+   */
+  std::string AnotherUsefulFunctionB(const AbstractProductA &collaborator) const override {
+    const std::string result = collaborator.UsefulFunctionA();
+    return "The result of the B1 collaborating with ( " + result + " )";
   }
 };
 
-class ConcreteCreator2 : public Creator {
+class ConcreteProductB2 : public AbstractProductB {
  public:
-  Product* FactoryMethod() const override {
-    return new ConcreteProduct2();
+  std::string UsefulFunctionB() const override {
+    return "The result of the product B2.";
+  }
+  /**
+   * The variant, Product B2, is only able to work correctly with the variant,
+   * Product A2. Nevertheless, it accepts any instance of AbstractProductA as an
+   * argument.
+   * 
+   * 變體產品 B2 只能與變體產品 A2 一起正常工作。 然而，它接受 AbstractProductA 的任何實例作為參數。
+   */
+  std::string AnotherUsefulFunctionB(const AbstractProductA &collaborator) const override {
+    const std::string result = collaborator.UsefulFunctionA();
+    return "The result of the B2 collaborating with ( " + result + " )";
   }
 };
 
 /**
- * 客戶端代碼與具體創建者的實例一起工作，儘管是通過其基本接口。 
- * 只要客戶端通過基接口繼續與創建者合作，您就可以將其傳遞給任何創建者的子類別。
+ * The Abstract Factory interface declares a set of methods that return
+ * different abstract products. These products are called a family and are
+ * related by a high-level theme or concept. Products of one family are usually
+ * able to collaborate among themselves. A family of products may have several
+ * variants, but the products of one variant are incompatible with products of
+ * another.
+ * 
+ * 抽象工廠接口聲明了一組返回不同抽象產品的方法。 
+ * 這些產品稱為系列，並通過高級主題或概念相關聯。 
+ * 一個家族的產品通常能夠相互協作。 
+ * 一個產品系列可能有多個變體，但一個變體的產品與另一個變體的產品不兼容。
  */
-void ClientCode(const Creator& creator) {
-  // ...
-  std::cout << "Client: I'm not aware of the creator's class, but it still works.\n"
-            << creator.SomeOperation() << std::endl;
-  // ...
+class AbstractFactory {
+ public:
+  virtual AbstractProductA *CreateProductA() const = 0;
+  virtual AbstractProductB *CreateProductB() const = 0;
+};
+
+/**
+ * Concrete Factories produce a family of products that belong to a single
+ * variant. The factory guarantees that resulting products are compatible. Note
+ * that signatures of the Concrete Factory's methods return an abstract product,
+ * while inside the method a concrete product is instantiated.
+ * 
+ * 具體工廠生產屬於單一變體的一系列產品。 工廠保證最終產品是兼容的。 
+ * 請注意，具體工廠方法的簽名返回一個抽象產品，而在方法內部實例化了一個具體產品。
+ */
+class ConcreteFactory1 : public AbstractFactory {
+ public:
+  AbstractProductA *CreateProductA() const override {
+    return new ConcreteProductA1();
+  }
+  AbstractProductB *CreateProductB() const override {
+    return new ConcreteProductB1();
+  }
+};
+
+/**
+ * Each Concrete Factory has a corresponding product variant.
+ * 每個具體工廠都有相應的產品變型。
+ */
+class ConcreteFactory2 : public AbstractFactory {
+ public:
+  AbstractProductA *CreateProductA() const override {
+    return new ConcreteProductA2();
+  }
+  AbstractProductB *CreateProductB() const override {
+    return new ConcreteProductB2();
+  }
+};
+
+/**
+ * The client code works with factories and products only through abstract
+ * types: AbstractFactory and AbstractProduct. This lets you pass any factory or
+ * product subclass to the client code without breaking it.
+ * 
+ * 客戶端代碼僅通過抽像類型與工廠和產品一起工作：AbstractFactory 和 AbstractProduct。 
+ * 這使您可以將任何工廠或產品子類傳遞給客戶端代碼而不會破壞它。
+ */
+
+void ClientCode(const AbstractFactory &factory) {
+  const AbstractProductA *product_a = factory.CreateProductA();
+  const AbstractProductB *product_b = factory.CreateProductB();
+  std::cout << product_b->UsefulFunctionB() << "\n";
+  std::cout << product_b->AnotherUsefulFunctionB(*product_a) << "\n";
+  delete product_a;
+  delete product_b;
 }
 
-/**
- * APP應用程序則根據配置或環境選擇來創建者的類型進行實作。
- */
-
 int main() {
-  std::cout << "App: Launched with the ConcreteCreator1.\n";
-  Creator* creator = new ConcreteCreator1();
-  ClientCode(*creator);
+  std::cout << "Client: Testing client code with the first factory type:\n";
+  ConcreteFactory1 *f1 = new ConcreteFactory1();
+  ClientCode(*f1);
+  delete f1;
   std::cout << std::endl;
-  std::cout << "App: Launched with the ConcreteCreator2.\n";
-  Creator* creator2 = new ConcreteCreator2();
-  ClientCode(*creator2);
-
-  delete creator;
-  delete creator2;
+  std::cout << "Client: Testing the same client code with the second factory type:\n";
+  ConcreteFactory2 *f2 = new ConcreteFactory2();
+  ClientCode(*f2);
+  delete f2;
   return 0;
 }
