@@ -10,6 +10,7 @@
 * [使用時機](#使用時機)
 * [URL結構圖](#url結構圖)
 * [實作成員](#實作成員)
+* [實作範例](#實作範例)
 * [參考資料](#參考資料)
 <!--te-->
 
@@ -49,6 +50,12 @@
   - AbstractProduct 介面的具象實作.
 * Client
   * 只觸及AbstractFactory和AbstractProduct這兩個抽象類別所定的介面.
+
+---
+<br>
+
+## 實作範例:
+- [Example](https://github.com/RC-Dev-Tech/design-pattern-abstract-factory/blob/main/C%2B%2B/main.cpp) - Abstract Factory Pattern (C++).
 
 ---
 <br>
