@@ -34,6 +34,7 @@
 
 ## URL結構圖
 ![](https://drive.google.com/uc?id=18E5zBikOZxx60j-krhzVz0-7Y2gSbj-R)
+> 圖片來源：[Refactoring.Guru - Abstract Factory](https://refactoring.guru/design-patterns/abstract-factory)
 
 ---
 <br>
