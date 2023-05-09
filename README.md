@@ -2,7 +2,6 @@
 > ##### 理論請自行找，網路上有很多相關的文章，這邊只關注於範例實作的部分.
 
 ---
-<br>
 
 <!--ts-->
 ## 目錄
@@ -15,13 +14,11 @@
 <!--te-->
 
 ---
-<br>
 
 ## 目的
 以同一個介面來建立一整族相關或相依的物件，不需要點名個物件真正所屬的具象類別.
 
 ---
-<br>
 
 ## 使用時機
 * 當系統必須要和最終成品的生成、組合、表達方式保持獨立時.
@@ -30,14 +27,12 @@
 * 你把類別程式庫貢獻出來，卻只想要公開介面，不想公開實作細節.
 
 ---
-<br>
 
 ## URL結構圖
 ![](https://drive.google.com/uc?id=18E5zBikOZxx60j-krhzVz0-7Y2gSbj-R)
 > 圖片來源：[Refactoring.Guru - Abstract Factory](https://refactoring.guru/design-patterns/abstract-factory)
 
 ---
-<br>
 
 ## 實作成員
 * AbstractFactory
@@ -53,22 +48,18 @@
   * 只觸及AbstractFactory和AbstractProduct這兩個抽象類別所定的介面.
 
 ---
-<br>
 
 ## 實作範例:
 - [Example](https://github.com/RC-Dev-Tech/design-pattern-abstract-factory/blob/main/C%2B%2B/main.cpp) - Abstract Factory Pattern (C++).
 
 ---
-<br>
 
 ## 參考資料
 * [Wiki - Abstract Factory Pattern](https://en.wikipedia.org/wiki/Abstract_factory_pattern) <br>
 * [Refactoring.Guru - Abstract Factory](https://refactoring.guru/design-patterns/abstract-factory) <br>
 
 ---
-<br>
 
----
 <!--ts-->
 #### [目錄 ↩](#目錄)
 <!--te-->
